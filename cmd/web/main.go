@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"flag"
 
-	"snippetbox.org/pkg/models"
+	"studentcorner.com/pkg/models"
 
 	_"github.com/go-sql-driver/mysql"
 	"database/sql"
@@ -15,7 +15,7 @@ func main() {
 	addr := flag.String("addr", ":4000", "HTTP netowrk address")
 	staticDir := flag.String("static-dir", "./ui/static", "Path to static assets")
 	htmlDir := flag.String("html-dir", "./ui/html", "Path to HTML templates")
-	dsn := flag.String("dsn", "sb:papaya77@/snippetbox?parseTime=true", "MySQL DSN")
+	dsn := flag.String("dsn", "sc:@/studentcorner?parseTime=true", "MySQL DSN")
 
 	flag.Parse()
 

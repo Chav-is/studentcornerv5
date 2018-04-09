@@ -8,15 +8,15 @@ type Database struct{
 	*sql.DB
 }
 
-func (db *Database) GetSnippet(id int) (*Snippet, error) {
-	stmt := `SELECT id, title, content, created, expires FROM snippets
-	WHERE expires > UTC_TIMESTAMP() AND id = ?`
+func (db *Database) GetProject(id int) (*Project, error) {
+	stmt := `SELECT json, created, tagline, tags, views FROM projects
+	WHERE id = ?`
 
 	row := db.QueryRow(stmt, id)
 
-	s := &Snippet{}
+	s := &Project{}
 
-	err := row.Scan(&s.ID, &s.Title, &s.Content, &s.Created, &s.Expires)
+	err := row.Scan(&s.Data, &s.Created, &s.Tagline, &s.Tags, &s.Views)
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
@@ -26,9 +26,9 @@ func (db *Database) GetSnippet(id int) (*Snippet, error) {
 	return s, nil
 }
 
-func (db *Database) LatestSnippets() (Snippets, error) {
-	stmt := `SELECT id, title, content, created, expires FROM snippets
-	WHERE expires > UTC_TIMESTAMP() ORDER BY created DESC LIMIT 10`
+func (db *Database) LatestProjects() (Projects, error) {
+	stmt := `SELECT title, tagline, coverPhoto FROM projects
+			 ORDER BY created DESC LIMIT 10`
 
 	rows, err := db.Query(stmt)
 	if err != nil {
@@ -36,27 +36,27 @@ func (db *Database) LatestSnippets() (Snippets, error) {
 	}
 	defer rows.Close()
 
-	snippets := Snippets{}
+	projects := Projects{}
 
 	for rows.Next() {
-		s := &Snippet{}
-		err := rows.Scan(&s.ID, &s.Title, &s. Content, &s.Created, &s.Expires)
+		s := &Project{}
+		err := rows.Scan(&s.Data, &s.Created, &s.Tagline, &s.Views)
 		if err != nil {
 			return nil, err
 		}
-		snippets = append(snippets, s)
+		projects = append(projects, s)
 	}
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return snippets, nil
+	return projects, nil
 }
 
-func (db *Database) InsertSnippet(title, content, expires string) (int, error) {
-	stmt := `INSERT INTO snippets (title, content, created, expires)
-	VALUES(?, ?, UTC_TIMESTAMP(), DATE_ADD(UTC_TIMESTAMP(), INTERVAL ? SECOND))`
+func (db *Database) InsertProject(title, data, created, authors, tagline string) (int, error) {
+	stmt := `INSERT INTO projects (title, json, created, authors, tagline)
+	VALUES(?, ?, HST_TIMESTAMP(), ?, ?)`
 
-	result, err := db.Exec(stmt, title, content, expires)
+	result, err := db.Exec(stmt, title, data, authors, tagline)
 	if err != nil {
 		return 0, err
 	}

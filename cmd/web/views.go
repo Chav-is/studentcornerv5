@@ -5,19 +5,19 @@ import (
 	"html/template"
 	"net/http"
 	"path/filepath"
-	"snippetbox.org/pkg/models"
+	"studentcorner.com/pkg/models"
 	"time"
 )
 
 func humanDate(t time.Time) string {
-	return t.Format("02 Jan 2006 at 15:04")
+	return t.Format("02 Jan 2018 at 15:04")
 }
 
 type HTMLData struct {
 	Form interface{}
 	Path string
-	Snippet *models.Snippet
-	Snippets []*models.Snippet
+	Project *models.Project
+	Projects []*models.Project
 }
 
 func (app *App) RenderHTML(w http.ResponseWriter, r *http.Request, page string, data *HTMLData) {

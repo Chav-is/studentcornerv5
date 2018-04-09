@@ -5,14 +5,16 @@ import(
 	"unicode/utf8"
 )
 
-type NewSnippet struct {
+type NewProject struct {
 	Title string
-	Content string
-	Expires string
+	Data string
+	Created string
+	Authors string
+	Tagline string
 	Failures map[string]string
 }
 
-func (f *NewSnippet) Valid() bool {
+func (f *NewProject) Valid() bool {
 	f.Failures = make(map[string]string)
 
 	if strings.TrimSpace(f.Title) == "" {
@@ -21,15 +23,16 @@ func (f *NewSnippet) Valid() bool {
 		f.Failures["Title"] = "Title cannot be longer than 100 characters"
 	}
 
-	if strings.TrimSpace(f.Content) == "" {
+	if strings.TrimSpace(f.Data) == "" {
 		f.Failures["Content"] = "Content is required"
 	}
 
-	permitted := map[string]bool{"3600": true, "86400": true, "31536000": true}
-	if strings.TrimSpace(f.Expires) == "" {
-		f.Failures["Expires"] = "Expiry time is required"
-	} else if !permitted[f.Expires] {
-		f.Failures["Expires"] = "Expirty time must be 3600, 86400 or 31536000 seconds!"
+	if strings.TrimSpace(f.Authors) == "" {
+		f.Failures["Authors"] = "Someone had to have made this!"
+	}
+
+	if strings.TrimSpace(f.Tagline) == "" {
+		f.Failures["Tagline"] = "Content is required"
 	}
 
 	return len(f.Failures) == 0

@@ -4,47 +4,47 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"snippetbox.org/pkg/forms"
+	"studentcorner.com/pkg/forms"
 )
 
 func (app *App) Home(w http.ResponseWriter, r *http.Request) {
-	snippets, err := app.Database.LatestSnippets()
+	projects, err := app.Database.LatestProjects()
 	if err != nil {
 		app.ServerError(w, err)
 		return
 	}
 
 	app.RenderHTML(w, r,"home.page.html", &HTMLData{
-		Snippets: snippets,
+		Projects: projects,
 	})
 
 }
 
-func (app *App) ShowSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *App) ShowProject(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	if err != nil || id < 1 {
 		http.NotFound(w, r)
 		return
 	}
 
-	snippet, err := app.Database.GetSnippet(id)
+	project, err := app.Database.GetProject(id)
 	if err != nil {
 		app.ServerError(w, err)
 		return
 	}
-	if snippet == nil {
+	if project == nil {
 		app.NotFound(w)
 		return
 	}
 
 	app.RenderHTML(w, r,"show.page.html", &HTMLData{
-		Snippet: snippet,
+		Project: project,
 	})
 }
 
-func (app *App) NewSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *App) NewProject(w http.ResponseWriter, r *http.Request) {
 	app.RenderHTML(w, r, "new.page.html", &HTMLData{
-		Form: &forms.NewSnippet{},
+		Form: &forms.NewProject{},
 	})
 }
 
@@ -55,20 +55,23 @@ func (app *App) CreateSnippet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	form := &forms.NewSnippet{
+	form := &forms.NewProject{
 		Title: r.PostForm.Get("title"),
-		Content: r.PostForm.Get("content"),
-		Expires: r.PostForm.Get("expires"),
+		Authors: r.PostForm.Get("authors"),
+		Data: r.PostForm.Get("data"),
+		Created: r.PostForm.Get("created"),
+		Tagline: r.PostForm.Get("tagline"),
+
 	}
 	if !form.Valid() {
 		app.RenderHTML(w, r, "new.page.html", &HTMLData{Form: form})
 		return
 	}
-	id, err := app.Database.InsertSnippet(form.Title, form.Content, form.Expires)
+	id, err := app.Database.InsertProject(form.Title, form.Authors, form.Data, form.Created, form.Tagline)
 	if err != nil {
 		app.ServerError(w, err)
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/snippet/%d", id), http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/project/%d", id), http.StatusSeeOther)
 }

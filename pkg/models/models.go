@@ -4,12 +4,23 @@ import (
 	"time"
 )
 
-type Snippet struct {
+type Project struct {
 	ID int
 	Title string
-	Content string
+	Data string
 	Created time.Time
-	Expires time.Time
+	Tags int
+	Views int
+	Tagline string
+	Authors int
 }
 
-type Snippets []*Snippet
+type Author struct {
+	ID int
+	FirstName string
+	LastName string
+	Bio string
+	Projects int
+}
+
+type Projects []*Project
