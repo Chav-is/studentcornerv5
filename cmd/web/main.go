@@ -28,8 +28,9 @@ func main() {
 		StaticDir: *staticDir,
 	}
 
-	log.Printf("Starting server on %s", *addr)
-	err := http.ListenAndServe(*addr, app.Routes())
+ 	http.Handle("/", http.FileServer(http.Dir(*htmlDir)))
+	log.Printf("Serving %s on HTTP port: %s\n", *htmlDir, *addr)
+	err := http.ListenAndServe(":4000", app.Routes())
 	log.Fatal(err)
 }
 

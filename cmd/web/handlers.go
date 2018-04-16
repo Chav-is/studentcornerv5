@@ -5,19 +5,18 @@ import (
 	"net/http"
 	"strconv"
 	"studentcorner.com/pkg/forms"
+	"encoding/json"
 )
 
 func (app *App) Home(w http.ResponseWriter, r *http.Request) {
-	projects, err := app.Database.LatestProjects()
+	projectsJson1, err := app.Database.LatestProjects()
 	if err != nil {
 		app.ServerError(w, err)
-		return
 	}
 
-	app.RenderHTML(w, r,"home.page.html", &HTMLData{
-		Projects: projects,
-	})
-
+	projectJson, err := json.Marshal(projectsJson1)
+	w.Write(projectJson)
+	fmt.Println(string(projectJson))
 }
 
 func (app *App) ShowProject(w http.ResponseWriter, r *http.Request) {
@@ -37,9 +36,10 @@ func (app *App) ShowProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.RenderHTML(w, r,"show.page.html", &HTMLData{
-		Project: project,
-	})
+	projectJson, err := json.Marshal(project)
+	w.Write(projectJson)
+	fmt.Println(string(projectJson))
+
 }
 
 func (app *App) NewProject(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func (app *App) NewProject(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (app *App) CreateSnippet(w http.ResponseWriter, r *http.Request) {
+func (app *App) CreateProject(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		app.ClientError(w, http.StatusBadRequest)

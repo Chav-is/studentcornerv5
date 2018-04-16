@@ -28,11 +28,11 @@ func (f *NewProject) Valid() bool {
 	}
 
 	if strings.TrimSpace(f.Authors) == "" {
-		f.Failures["Authors"] = "Someone had to have made this!"
+		f.Failures["Authors"] = "Someone had to have made this"
 	}
 
 	if strings.TrimSpace(f.Tagline) == "" {
-		f.Failures["Tagline"] = "Content is required"
+		f.Failures["Tagline"] = "You need a tag-line"
 	}
 
 	return len(f.Failures) == 0

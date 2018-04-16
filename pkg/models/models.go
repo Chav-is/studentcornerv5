@@ -5,22 +5,23 @@ import (
 )
 
 type Project struct {
-	ID int
-	Title string
-	Data string
-	Created time.Time
-	Tags int
-	Views int
-	Tagline string
-	Authors int
+	ID int `json:"pid"`
+	Title string `json:"title"`
+	Data string `json:"Data"`
+	Created time.Time `json:"Created"`
+	Tags int `json:"tags"`
+	Views int `json:"Views"`
+	Tagline string `json:"Tagline"`
+	Authors int `json:"authors"`
+	CoverPhoto string `json:"CoverPhoto"`
 }
 
 type Author struct {
-	ID int
-	FirstName string
-	LastName string
-	Bio string
-	Projects int
+	ID int `json:"uid"`
+	FirstName string `json:"firstname"`
+	LastName string `json:"lastname"`
+	Bio string `json:"bio"`
+	Projects int `json:"projects"`
 }
 
 type Projects []*Project

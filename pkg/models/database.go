@@ -40,7 +40,7 @@ func (db *Database) LatestProjects() (Projects, error) {
 
 	for rows.Next() {
 		s := &Project{}
-		err := rows.Scan(&s.Data, &s.Created, &s.Tagline, &s.Views)
+		err := rows.Scan(&s.Title, &s.Tagline, &s.CoverPhoto)
 		if err != nil {
 			return nil, err
 		}
@@ -49,7 +49,8 @@ func (db *Database) LatestProjects() (Projects, error) {
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	return projects, nil
+
+	return projects, err
 }
 
 func (db *Database) InsertProject(title, data, created, authors, tagline string) (int, error) {
